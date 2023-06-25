@@ -45,7 +45,7 @@ jobs:
       - name: Run test
         run: |
           echo "Got to the test"
-          make map_branch branch="release-4.2.3"
+          make map_branch branch=${{ env.TYK_REF }}
 
           # - name: checkout tyk-docs/${{ env.TYK_REF }}
           #   uses: actions/checkout@master
