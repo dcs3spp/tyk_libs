@@ -10,7 +10,7 @@ install:
 ##
 
 map_branch:
-	poetry run python -m docs.cli.map_branch branch=release-5-lts
+	poetry run python -m docs.cli.map_branch branch=$(branch)
 
 ##
 # Testing
