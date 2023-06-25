@@ -40,17 +40,16 @@ jobs:
           path: .venv
           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
       - name: Map branch ${{ env.TYK_REF }}
-        run: echo "TEST_ENV=$(make map_branch branch=${{ env.TYK_REF }})" >> $GITHUB_ENV
+        run: echo "MAPPED_BRANCH=$(make map_branch branch=${{ env.TYK_REF }})" >> $GITHUB_ENV
       - name: Display mapped branch
         run: |
-          echo $TEST_ENV
-
-          # - name: checkout tyk-docs/${{ env.TYK_REF }}
-          #   uses: actions/checkout@master
-          #   with:
-          #     token: ${{ secrets.ORG_GH_TOKEN }}
-          #     ref: ${{ env.TYK_REF }}
-          #     path: ./tyk-docs
+          echo ${{ env.MAPPED_BRANCH }}
+      - name: Checkout tyk-docs/${{ env.MAPPED_BRANCH }}
+        uses: actions/checkout@master
+        with:
+          token: ${{ secrets.ORG_GH_TOKEN }}
+          ref: ${{ env.MAPPED_BRANCH }}
+          path: ./tyk-docs
 
           #       - name: checkout tyk/${{ env.TYK_SHA }}
           #         uses: actions/checkout@master
