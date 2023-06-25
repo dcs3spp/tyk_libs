@@ -23,11 +23,8 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - name: map branch
-        uses:
-          actions/checkout@master
-          # with:
-          #   path: ./tyk_libs
+      - name: Checkout tyk_libs repository
+        uses: actions/checkout@master
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
@@ -42,10 +39,15 @@ jobs:
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
-      - name: Run test
+      - name: Test map_branch Python CLI
         run: |
-          echo "Got to the test"
+          echo "Display the Python CLI branch mapping result"
           make map_branch branch=${{ env.TYK_REF }}
+      - name: Set env
+        run: echo "TEST_ENV=$(make map_branch branch=${{ env.TYK_REF }})" >> $GITHUB_ENV
+      - name: Test env var set
+        run: |
+          echo $TEST_ENV
 
           # - name: checkout tyk-docs/${{ env.TYK_REF }}
           #   uses: actions/checkout@master
