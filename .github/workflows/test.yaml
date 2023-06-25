@@ -15,6 +15,8 @@ on:
         type: string
 
 env:
+  PYTHON_VERSION: 3.11
+  POETRY_VERSION: 1.5.1
   TYK_SHA: ${{ github.event.inputs.sha }}
   TYK_REF: ${{ github.event.inputs.branch }}
   GOPRIVATE: github.com/TykTechnologies
@@ -27,10 +29,16 @@ jobs:
         uses: actions/checkout@master
       - uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Cache poetry install
+        uses: actions/cache@v2
+        with:
+          path: ~/.local
+          key: poetry-${{ env.POETRY_VERSION }}-0
       - name: Install poetry
         uses: snok/install-poetry@v1.3.2
         with:
+          version: ${{ env.POETRY_VERSION }}
           virtualenvs-create: true
           virtualenvs-in-project: true
       - name: Load cached venv
@@ -39,15 +47,17 @@ jobs:
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install poetry dependencies except the poetry project in pyproject.toml
+        run: poetry install --no-interaction --no-root
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      - name: Install poetry project in pyproject.toml
+        run: poetry install --no-interaction
       - name: Map branch ${{ env.TYK_REF }}
         run: echo "MAPPED_BRANCH=$(make map_branch branch=${{ env.TYK_REF }})" >> $GITHUB_ENV
-      - name: Display mapped branch
-        run: |
-          echo ${{ env.MAPPED_BRANCH }}
       - name: Checkout tyk-docs/${{ env.MAPPED_BRANCH }}
         uses: actions/checkout@master
         with:
-          token: ${{ secrets.ORG_GH_TOKEN }}
+          # token: ${{ secrets.ORG_GH_TOKEN }}
           ref: ${{ env.MAPPED_BRANCH }}
           path: ./tyk-docs
 
