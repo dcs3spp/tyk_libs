@@ -1,0 +1,72 @@
+# This workflow is a test for how will update the OAS docs on tyk-docs
+
+name: TEST : Tyk OAS API definition fields sync
+
+on:
+  workflow_dispatch:
+    sha:
+      required: true
+      description: SHA commit
+    branch:
+      required: true
+      description: include branch name
+
+env:
+  TYK_SHA: ${{ github.event.inputs.sha }}
+  TYK_REF: ${{ github.event.inputs.branch }}
+  GOPRIVATE: github.com/TykTechnologies
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: map branch
+        uses: actions/checkout@master
+          # with:
+          #   path: ./tyk_libs
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install poetry
+        uses: snok/install-poetry@v1.3.2
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Run test
+        run: echo "Got to the test"
+
+            # - name: checkout tyk-docs/${{ env.TYK_REF }}
+            #   uses: actions/checkout@master
+            #   with:
+            #     token: ${{ secrets.ORG_GH_TOKEN }}
+            #     ref: ${{ env.TYK_REF }}
+            #     path: ./tyk-docs
+
+            #       - name: checkout tyk/${{ env.TYK_SHA }}
+            #         uses: actions/checkout@master
+            #         with:
+            #           repository: TykTechnologies/tyk
+            #           token: ${{ secrets.ORG_GH_TOKEN }}
+            #           ref: ${{ env.TYK_SHA }}
+            #           path: ./tyk
+
+            #      - name: Copy OAS Docs
+            #        run: |
+            #          cat ./tyk/apidef/oas/schema/x-tyk-gateway.md > ./tyk-docs/tyk-docs/content/shared/x-tyk-gateway.md
+            #
+            #      - name: Raise pull request
+            #        uses: peter-evans/create-pull-request@v4
+            #        with:
+            #          commit-message: import OAS API Object from ${{ env.TYK_REF }}
+            #          title: import OAS API Object from ${{ env.TYK_REF }}
+            #          branch: ${{ env.TYK_REF }}/update-oas-docs
+            #          path: ./tyk-docs
+            #          branch-suffix: random
+            #          delete-branch: true
+            #          reviewers: letzya, Keithwachira
