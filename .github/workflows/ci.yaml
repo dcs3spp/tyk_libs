@@ -24,3 +24,4 @@ jobs:
       - name: Unit Tests
         run: make pytest
       - name: BDD Tests
+        run: make behave
