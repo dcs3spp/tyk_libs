@@ -4,14 +4,15 @@ name: TEST - Tyk OAS API definition fields sync
 
 on:
   workflow_dispatch:
-    sha:
-      required: true
-      description: SHA commit
-      type: string
-    branch:
-      required: true
-      description: include branch name
-      type: string
+    inputs:
+      sha:
+        required: true
+        description: SHA commit
+        type: string
+      branch:
+        required: true
+        description: include branch name
+        type: string
 
 env:
   TYK_SHA: ${{ github.event.inputs.sha }}
