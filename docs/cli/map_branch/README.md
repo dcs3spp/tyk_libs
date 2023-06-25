@@ -10,7 +10,7 @@ to `release-x.y`. This document outlines why.
 
 ## Overview
 
-The tyk-docs repository uses a GitHub action, [Tyk OAS API definition fields sync]((https://github.com/TykTechnologies/tyk-docs/blob/master/.github/workflows/update-oas-docs.yaml),
+The tyk-docs repository uses a GitHub action, [Tyk OAS API definition fields sync](https://github.com/TykTechnologies/tyk-docs/blob/master/.github/workflows/update-oas-docs.yaml),
 to respond to a `repository_dispatch` event for synchronising changes to Tyk OAS
 definition fields.
 
