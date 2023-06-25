@@ -60,7 +60,7 @@ jobs:
           # token: ${{ secrets.ORG_GH_TOKEN }}
           ref: ${{ env.MAPPED_BRANCH }}
           path: ./tyk-docs
-
+          repository: "TykTechnologies/tyk-docs"
           #       - name: checkout tyk/${{ env.TYK_SHA }}
           #         uses: actions/checkout@master
           #         with:
