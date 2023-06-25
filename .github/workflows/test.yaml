@@ -40,8 +40,9 @@ jobs:
           path: .venv
           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
       - name: Run test
-        run:
+        run: |
           echo "Got to the test"
+          make map_branch branch="release-4.2.3"
 
           # - name: checkout tyk-docs/${{ env.TYK_REF }}
           #   uses: actions/checkout@master
