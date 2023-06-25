@@ -44,7 +44,7 @@ jobs:
           echo "Display the Python CLI branch mapping result"
           make map_branch branch=${{ env.TYK_REF }}
       - name: Set env
-        run: echo "TEST_ENV=$(make map_branch branch=${{ $$TYK_REF }})" >> $GITHUB_ENV
+        run: echo "TEST_ENV=$(make map_branch branch=$$TYK_REF)" >> $GITHUB_ENV
       - name: Test env var set
         run: |
           echo $TEST_ENV
