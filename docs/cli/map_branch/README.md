@@ -30,6 +30,12 @@ An example payload is listed below:
 }
 ```
 
+The [Tyk Gateway repository](https://github.com/TykTechnologies/tyk) raises the
+event whenever the OAS document is modified. For further details see the
+[update-oas-docs GitHub
+action](https://github.com/TykTechnologies/tyk/blob/master/.github/workflows/update-oas-docs.yml)
+in the Tyk Gateway repository.
+
 ## The Current Workflow
 
 Tyk-docs repository contains a GitHub action, named [Tyk OAS API definition
