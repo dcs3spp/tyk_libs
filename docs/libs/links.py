@@ -33,7 +33,7 @@ def read_urls(filePath: Path, key: str) -> set[str]:
     return paths
 
 
-def find_key_in_yaml(filePath: Path, key: str) -> set[str]:
+def get_set_of_key_values_in_yaml(filePath: Path, key: str) -> set[str]:
     paths = set()
 
     with filePath.open() as file:

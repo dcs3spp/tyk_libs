@@ -1,3 +1,5 @@
+# pyright: reportUnusedImport=false
+
 import pytest
 
 from hamcrest import assert_that, equal_to
@@ -87,6 +89,6 @@ def test_get_yaml_key() -> None:
     with patch.object(links.Path, "open", mock_open(read_data=mocked_content)):
         mock_path = links.Path("test_file.txt")
 
-        result = links.find_key_in_yaml(mock_path, "path")
+        result = links.get_set_of_key_values_in_yaml(mock_path, "path")
 
         assert_that(result, equal_to(expected))
