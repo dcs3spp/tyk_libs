@@ -22,7 +22,7 @@ def _find_unique_values_for_key(yaml_data: dict, key: str) -> set[str]:
     return unique_values
 
 
-def read_urls(filePath: Path, key: str) -> set[str]:
+def get_set_of_key_values_in_urlcheck(filePath: Path, key: str) -> set[str]:
     paths = set()
 
     with filePath.open() as file:
