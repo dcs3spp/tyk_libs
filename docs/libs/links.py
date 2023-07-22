@@ -1,5 +1,5 @@
 import json
-import yaml
+import ruamel.yaml
 
 from pathlib import Path
 
@@ -52,7 +52,9 @@ def get_set_of_key_values_in_yaml(input: Path, key: str) -> set[Path]:
     paths = set()
 
     with input.open() as file:
-        content = yaml.safe_load(file)
+        yaml = ruamel.yaml.YAML(typ="safe", pure=True)
+        content = yaml.load(file)
+
         paths = _find_unique_values_for_key(content, key)
 
     return paths

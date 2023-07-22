@@ -1,4 +1,4 @@
-import yaml
+import ruamel.yaml
 
 from argparse import ArgumentParser
 from pathlib import Path
@@ -42,7 +42,11 @@ def write_to_yaml(paths: set[str], out: Path) -> None:
         for path in paths:
             item = {"path": f"{path}"}
             items.append(item)
-        yaml.dump(root, file, default_style=None)
+
+        yaml = ruamel.yaml.YAML()
+        yaml.indent(sequence=4, offset=2)
+
+        yaml.dump(root, file)
 
 
 def run() -> None:
