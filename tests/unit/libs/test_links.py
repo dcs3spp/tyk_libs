@@ -10,16 +10,14 @@ from docs.libs import links
 
 def test_get_urls() -> None:
     expected = {
-        "/basic-config-and-security/reduce-latency/caching/global-cache/",
-        "/graphql/introspection/introspection-queries/",
-        "/graphql/creating-gql-api/",
-        "/tyk-apis/tyk-dashboard-api/data-graphs-api/",
-        "/tyk-multi-data-centre/mdcb-components/",
-        "/tyk-on-premises/licensing/",
-        "/docs/getting-started/licencing",
-        "/docs/getting-started/licensing",
-        "/getting-started/key-concepts/graphql-entities/",
-        "/planning-for-production/database-settings/mongodb-sizing/",
+        "/basic-config-and-security/reduce-latency/caching/global-cache",
+        "/graphql/introspection/introspection-queries",
+        "/graphql/creating-gql-api",
+        "/tyk-apis/tyk-dashboard-api/data-graphs-api",
+        "/tyk-multi-data-centre/mdcb-components",
+        "/tyk-on-premises/licensing",
+        "/getting-started/key-concepts/graphql-entities",
+        "/planning-for-production/database-settings/mongodb-sizing",
     }
 
     mocked_content = """
@@ -35,12 +33,12 @@ def test_get_urls() -> None:
     {"path":"/planning-for-production/database-settings/mongodb-sizing/", "title":"MongoDB Sizing", "file": "./content/planning-for-production/database-settings/mongodb-sizing.md"}
     """
 
-    mocked_content = mocked_content.lstrip(" \n").rstrip(" \n")
+    mocked_content = mocked_content.strip(" \n")
 
     with patch.object(links.Path, "open", mock_open(read_data=mocked_content)):
         mock_path = links.Path("test_file.txt")
 
-        result = links.get_set_of_key_values_in_urlcheck(mock_path, "path")
+        result = {str(value) for value in links.get_path_set_from_urlcheck(mock_path)}
 
         assert_that(result, equal_to(expected))
 
@@ -89,6 +87,9 @@ def test_get_yaml_key() -> None:
     with patch.object(links.Path, "open", mock_open(read_data=mocked_content)):
         mock_path = links.Path("test_file.txt")
 
-        result = links.get_set_of_key_values_in_yaml(mock_path, "path")
+        result = {
+            str(value)
+            for value in links.get_set_of_key_values_in_yaml(mock_path, "path")
+        }
 
         assert_that(result, equal_to(expected))
