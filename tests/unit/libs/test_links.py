@@ -38,7 +38,9 @@ def test_get_urls() -> None:
     with patch.object(links.Path, "open", mock_open(read_data=mocked_content)):
         mock_path = links.Path("test_file.txt")
 
-        result = {str(value) for value in links.get_path_set_from_urlcheck(mock_path)}
+        result = {
+            str(value.path) for value in links.get_path_set_from_urlcheck(mock_path)
+        }
 
         assert_that(result, equal_to(expected))
 

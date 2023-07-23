@@ -4,12 +4,13 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 from docs.libs.links import (
+    PathTitlePair,
     get_path_set_from_urlcheck,
     get_set_of_key_values_in_yaml,
 )
 
 
-def find_missing_links_in_menu_yaml(urlcheck: Path, menu: Path) -> set[str]:
+def find_missing_links_in_menu_yaml(urlcheck: Path, menu: Path) -> set[PathTitlePair]:
     """
     Find unique non alias paths that are in urlcheck file but not in menu.yaml
 
@@ -21,17 +22,19 @@ def find_missing_links_in_menu_yaml(urlcheck: Path, menu: Path) -> set[str]:
 
     Key = "path"
 
-    urlcheckSet = {str(i) for i in get_path_set_from_urlcheck(urlcheck)}
-    menuSet = {str(i) for i in get_set_of_key_values_in_yaml(menu, Key)}
+    urlcheckSet = {i for i in get_path_set_from_urlcheck(urlcheck)}
+    menuSet = {i for i in get_set_of_key_values_in_yaml(menu, Key)}
 
-    return urlcheckSet - menuSet
+    diff = PathTitlePair.find_missing_paths(urlcheckSet, menuSet)
+
+    return diff
 
 
-def write_to_yaml(paths: set[str], out: Path) -> None:
+def write_to_yaml(paths: set[PathTitlePair], out: Path) -> None:
     """
     Output to yaml file the set of paths
 
-    @param paths(set[str]) Set of file paths
+    @param paths(set[PathStringPair]) Set of file paths
     @param out(Path) Target yaml output file
     """
 
@@ -40,7 +43,7 @@ def write_to_yaml(paths: set[str], out: Path) -> None:
         root = {"paths": items}
 
         for path in paths:
-            item = {"path": f"{path}"}
+            item = {"path": f"{path.path}", "title": f"{path.title}"}
             items.append(item)
 
         yaml = ruamel.yaml.YAML()
