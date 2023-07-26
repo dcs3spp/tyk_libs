@@ -14,7 +14,10 @@ map_branch:
 	@poetry run python -m docs.cli.map_branch branch=$(branch)
 
 find_missing_links:
-	@poetry run python -m docs.cli.check_menu_yaml_links
+	@poetry run python -m docs.cli.check_menu_yaml_links || { \
+		status=$$?; \
+		exit $$status; \
+	}
 
 ##
 # Testing

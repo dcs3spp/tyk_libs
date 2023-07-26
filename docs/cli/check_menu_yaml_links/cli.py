@@ -1,7 +1,9 @@
 import ruamel.yaml
+import sys
 
 from argparse import ArgumentParser
 from pathlib import Path
+from typing import IO, Any
 
 from docs.libs.links import (
     PathTitlePair,
@@ -30,7 +32,7 @@ def find_missing_links_in_menu_yaml(urlcheck: Path, menu: Path) -> set[PathTitle
     return diff
 
 
-def write_to_yaml(paths: set[PathTitlePair], out: Path) -> None:
+def write_to_yaml(paths: set[PathTitlePair], out: IO[Any]) -> None:
     """
     Output to yaml file the set of paths
 
@@ -38,27 +40,31 @@ def write_to_yaml(paths: set[PathTitlePair], out: Path) -> None:
     @param out(Path) Target yaml output file
     """
 
-    with out.open(mode="w") as file:
-        items = []
-        root = {"paths": items}
+    items = []
+    root = {"paths": items}
 
-        for path in paths:
-            item = {"path": f"{path.path}", "title": f"{path.title}"}
-            items.append(item)
+    for path in paths:
+        item = {"path": f"{path.path}", "title": f"{path.title}"}
+        items.append(item)
 
-        yaml = ruamel.yaml.YAML()
-        yaml.indent(sequence=4, offset=2)
+    yaml = ruamel.yaml.YAML()
+    yaml.indent(sequence=4, offset=2)
 
-        yaml.dump(root, file)
+    yaml.dump(root, out)
 
 
-def run() -> None:
+def run() -> int:
     """
     Run the check_menu_yaml_links CLI.
 
     Usage:
         python3 -m docs.cli.check_menu_yaml_links urlcheck=urlcheck.json menu=menu.yaml
+
+    @return (int) Return exit status code
     """
+    ErrorExitCode = 1
+    SuccessExitCode = 0
+
     parser = ArgumentParser()
     parser.add_argument("--urlcheck", default="urlcheck.json")
     parser.add_argument("--menu", default="menu.yaml")
@@ -70,13 +76,21 @@ def run() -> None:
 
     if not urlcheckPath.exists():
         print(f"file {args.urlcheck} does not exist")
-        return
+        return ErrorExitCode
     elif not menuPath.exists():
         print(f"file {args.menu} does not exist")
-        return
+        return ErrorExitCode
 
     missingLinks = find_missing_links_in_menu_yaml(urlcheckPath, menuPath)
 
-    out = Path("missing_links.yaml")
+    count = len(missingLinks)
 
-    write_to_yaml(missingLinks, out)
+    if count > 0:
+        print(f"{count} missing links were found\n\n")
+
+        write_to_yaml(missingLinks, sys.stdout)
+
+        print(f"\nExit status code {ErrorExitCode}")
+        return ErrorExitCode
+
+    return SuccessExitCode
