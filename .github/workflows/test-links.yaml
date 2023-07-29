@@ -1,0 +1,49 @@
+# This workflow is a test for how will update the OAS docs on tyk-docs
+
+name: TEST - `links in `Menu
+
+on:
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: 3.11
+  POETRY_VERSION: 1.5.1
+  TYK_SHA: ${{ github.event.inputs.sha }}
+  TYK_REF: ${{ github.event.inputs.branch }}
+  GOPRIVATE: github.com/TykTechnologies
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tyk_libs repository
+        uses: actions/checkout@master
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Cache poetry install
+        uses: actions/cache@v2
+        with:
+          path: ~/.local
+          key: poetry-${{ env.POETRY_VERSION }}-0
+      - name: Install poetry
+        uses: snok/install-poetry@v1.3.2
+        with:
+          version: ${{ env.POETRY_VERSION }}
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v2
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install poetry dependencies except the poetry project in pyproject.toml
+        run: poetry install --no-interaction --no-root
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      - name: Install poetry project in pyproject.toml
+        run: poetry install --no-interaction
+      - name: Test menu.yaml
+        run: |
+          echo "$"
+          make find_missing_links
