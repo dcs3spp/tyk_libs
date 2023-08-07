@@ -15,6 +15,7 @@ usages are CLIs for use in GitHub actions.
 
 ## CLI Utilities
 
-| CLI        | Description                                               | Usage                                  |
-| :--------- | :-------------------------------------------------------- | :------------------------------------- |
-| map_branch | Map Tyk Gateway release branch to Tyk-docs release branch | `make map_branch branch=release-4.2.3` |
+| CLI                | Description                                               | Usage                                  |
+| :----------------- | :-------------------------------------------------------- | :------------------------------------- |
+| find_missing_links | Check menu.yaml for missing content paths                 | `make find_missing_links`              |
+| map_branch         | Map Tyk Gateway release branch to Tyk-docs release branch | `make map_branch branch=release-4.2.3` |
