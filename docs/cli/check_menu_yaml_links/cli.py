@@ -86,7 +86,14 @@ def run() -> int:
     count = len(missingLinks)
 
     if count > 0:
-        print(f"{count} missing links were found\n\n")
+        print(
+            "The urlcheck.json Hugo build file contains paths for all website content"
+        )
+        print("Some file paths have not been included in menu.yaml")
+        print()
+        print("Please remember to update menu.yaml with the path of new content files")
+        print()
+        print(f"{count} missing paths were found\n\n")
 
         write_to_yaml(missingLinks, sys.stdout)
 
